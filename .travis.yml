@@ -1,0 +1,33 @@
+dist: xenial
+
+services:
+  - docker
+
+branches:
+  only:
+    - master
+
+notifications:
+  slack: ibm-cloudplatform:A0dghgxajjlRicfCGqLumVKE
+
+language: python
+python:
+  - "3.8"
+  - "3.9"
+
+install:
+  - pip3 install flake8
+
+script:
+  - flake8 src
+  - echo ok
+
+before_deploy:
+   - bash sonar_scanner.sh
+
+deploy:
+    provider: script
+    script: bash deploy.sh
+    on:
+      branch: master
+      condition: $TRAVIS_PYTHON_VERSION == 3.8
